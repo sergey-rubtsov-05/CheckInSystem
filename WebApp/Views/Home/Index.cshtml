@@ -1,5 +1,4 @@
-﻿@model System.Collections.Generic.IEnumerable<Models.CheckIn>
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -110,24 +109,31 @@
 
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-bordered">
+        <table id="checkInList" class="table table-bordered">
             <thead>
-                <tr>
-                    <th>ФИО</th>
-                    <th>Пол</th>
-                    <th>Время прихода</th>
-                </tr>
+            <tr>
+                <th>ФИО</th>
+                <th>Пол</th>
+                <th>Время прихода</th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (var checkIn in Model)
-                {
-                    <tr>
-                        <td>@checkIn.Visitor</td>
-                        <td>@checkIn.Sex</td>
-                        <td>@checkIn.VisitDateTime</td>
-                    </tr>
-                }
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:14183/api/checkIn',
+            success: function (result) {
+                var tbody = $("#checkInList > tbody");
+                result.forEach(function(checkIn) {
+                    tbody.append("<tr><td>" + checkIn.visitor + "</td><td>" + checkIn.sex + "</td><td>" + checkIn.visitDateTime +"</td></tr>");
+                });
+            }
+        });
+    });
+</script>
