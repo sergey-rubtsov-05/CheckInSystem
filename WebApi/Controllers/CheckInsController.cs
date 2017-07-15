@@ -7,19 +7,19 @@ using Models;
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
-    public class CheckInController : Controller
+    public class CheckInsController : Controller
     {
-        private readonly CheckInContext _context;
+        private readonly IRepository<CheckIn> _checkInRepository;
 
-        public CheckInController(CheckInContext context)
+        public CheckInsController(IRepository<CheckIn> checkInRepository)
         {
-            _context = context;
+            _checkInRepository = checkInRepository;
         }
 
         [HttpGet]
         public IEnumerable<CheckIn> Get()
         {
-            return _context.CheckIns.ToList();
+            return _checkInRepository.Get().ToList();
         }
     }
 }

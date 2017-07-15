@@ -35,6 +35,9 @@ namespace WebApi
 
             services.AddCors();
             services.AddMvc();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
