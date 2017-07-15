@@ -22,9 +22,9 @@ namespace DataAccess
             throw new System.NotImplementedException();
         }
 
-        public void Create(T entity)
+        public void Add(T entity)
         {
-            throw new System.NotImplementedException();
+            _uow.Add(entity);
         }
 
         public void Remove(T entity)

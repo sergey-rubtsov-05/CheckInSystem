@@ -7,7 +7,7 @@ namespace DataAccess
     {
         IQueryable<T> Get();
         T Get(int id);
-        void Create(T entity);
+        void Add(T entity);
         void Remove(T entity);
     }
 }

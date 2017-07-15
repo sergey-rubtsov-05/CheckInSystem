@@ -7,5 +7,6 @@ namespace DataAccess
     {
         IQueryable<T> Query<T>() where T : Entity;
         ITransaction BeginTransaction();
+        void Add<T>(T entity) where T : Entity;
     }
 }

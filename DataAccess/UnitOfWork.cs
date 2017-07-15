@@ -21,5 +21,11 @@ namespace DataAccess
         {
             throw new System.NotImplementedException();
         }
+
+        public void Add<T>(T entity) where T : Entity
+        {
+            _context.Add(entity);
+            _context.SaveChanges();
+        }
     }
 }
