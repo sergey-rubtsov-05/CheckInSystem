@@ -2,7 +2,7 @@
 using System.Linq;
 using Models;
 
-namespace DataAccess
+namespace DataAccess.Impl
 {
     public static class DbInitializer
     {

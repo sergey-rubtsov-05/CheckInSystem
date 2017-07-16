@@ -1,7 +1,7 @@
 using System.Linq;
 using Models;
 
-namespace DataAccess
+namespace DataAccess.Impl
 {
     public class Repository<T> : IRepository<T> where T : Entity
     {

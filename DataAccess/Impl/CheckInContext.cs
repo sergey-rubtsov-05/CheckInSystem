@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Models;
 
-namespace DataAccess
+namespace DataAccess.Impl
 {
     public class CheckInContext : DbContext
     {

@@ -1,7 +1,7 @@
 using System.Linq;
 using Models;
 
-namespace DataAccess
+namespace DataAccess.Impl
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -19,7 +19,10 @@ namespace DataAccess
 
         public ITransaction BeginTransaction()
         {
-            throw new System.NotImplementedException();
+            if (_context.Database.CurrentTransaction == null)
+                return new DbTransaction(_context.Database.BeginTransaction());
+
+            return new MockTransaction();
         }
 
         public void Add<T>(T entity) where T : Entity

@@ -12,7 +12,7 @@ namespace Business.UnitTests
         public void AddCheckIn()
         {
             var substituteRepo = Substitute.For<IRepository<CheckIn>>();
-            var checkInService = new CheckInService(substituteRepo);
+            var checkInService = new CheckInService(substituteRepo, Substitute.For<IUnitOfWork>());
             var checkIn = new CheckIn();
 
             checkInService.Add(checkIn);
