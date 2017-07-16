@@ -10,5 +10,6 @@ namespace DataAccess.Impl
         }
 
         public DbSet<CheckIn> CheckIns { get; set; }
+        public DbSet<Person> Persons { get; set; }
     }
 }

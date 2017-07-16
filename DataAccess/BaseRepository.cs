@@ -1,33 +1,33 @@
 using System.Linq;
 using Models;
 
-namespace DataAccess.Impl
+namespace DataAccess
 {
-    public class Repository<T> : IRepository<T> where T : Entity
+    public abstract class BaseRepository<T> : IRepository<T> where T : Entity
     {
         private readonly IUnitOfWork _uow;
 
-        public Repository(IUnitOfWork uow)
+        protected BaseRepository(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
-        public IQueryable<T> Get()
+        public virtual IQueryable<T> Get()
         {
             return _uow.Query<T>();
         }
 
-        public T Get(int id)
+        public virtual T Get(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
             _uow.Add(entity);
         }
 
-        public void Remove(T entity)
+        public virtual void Remove(T entity)
         {
             throw new System.NotImplementedException();
         }

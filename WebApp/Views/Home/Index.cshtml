@@ -11,7 +11,7 @@
                 var tbody = $("#checkInList > tbody");
                 tbody.html(null);
                 result.forEach(function (checkIn) {
-                    tbody.append("<tr><td>" + checkIn.visitor + "</td><td>" + checkIn.sex + "</td><td>" + checkIn.visitDateTime + "</td></tr>");
+                    tbody.append("<tr><td>" + checkIn.personFullName + "</td><td>" + checkIn.personSex + "</td><td>" + checkIn.personBirthDate + "</td><td>" + checkIn.checkInVisitDateTime + "</td></tr>");
                 });
             }
         });
@@ -60,6 +60,7 @@
             <tr>
                 <th>ФИО</th>
                 <th>Пол</th>
+                <th>Дата рождения</th>
                 <th>Время прихода</th>
             </tr>
             </thead>

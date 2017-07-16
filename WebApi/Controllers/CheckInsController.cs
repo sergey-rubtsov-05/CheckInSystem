@@ -5,6 +5,7 @@ using Business;
 using DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.DTO;
 
 namespace WebApi.Controllers
 {
@@ -21,9 +22,17 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<CheckIn> Get()
+        public IEnumerable<CheckInDto> Get()
         {
-            return _checkInRepository.Get().ToList();
+            var checkIns = _checkInRepository.Get().Select(o => new CheckInDto
+            {
+                CheckInId = o.Id,
+                CheckInVisitDateTime = o.VisitDateTime,
+                PersonBirthDate = o.Person.BirthDate,
+                PersonFullName = $"{o.Person.FirstName} {o.Person.LastName}",
+                PersonSex = o.Person.Sex
+            });
+            return checkIns;
         }
 
         [HttpPost]

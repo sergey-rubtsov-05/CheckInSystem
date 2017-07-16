@@ -4,8 +4,9 @@ namespace Models
 {
     public class CheckIn : Entity
     {
-        public string Visitor { get; set; }
-        public Sex Sex { get; set; }
+        public Person Person { get; set; }
+        public int PersonId { get; set; }
+
         public DateTime VisitDateTime { get; set; }
     }
 }

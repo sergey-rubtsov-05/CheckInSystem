@@ -17,8 +17,28 @@ namespace DataAccess.Impl
 
             var checkIns = new CheckIn[]
             {
-                new CheckIn { Visitor = "Петров Пётр", VisitDateTime = DateTime.Now, Sex = Sex.Male },
-                new CheckIn { Visitor = "Андреева Анжелика", VisitDateTime = DateTime.Now, Sex = Sex.Female }
+                new CheckIn
+                {
+                    Person = new Person
+                    {
+                        FirstName = "Пётр",
+                        LastName = "Петров",
+                        BirthDate = new DateTime(1990, 9, 10),
+                        Sex = Sex.Male
+                    },
+                    VisitDateTime = DateTime.Now
+                },
+                new CheckIn
+                {
+                    Person = new Person
+                    {
+                        FirstName = "Анжелика",
+                        LastName = "Андреева",
+                        BirthDate = new DateTime(1991, 7, 3),
+                        Sex = Sex.Female
+                    },
+                    VisitDateTime = DateTime.Now
+                }
             };
             context.CheckIns.AddRange(checkIns);
 

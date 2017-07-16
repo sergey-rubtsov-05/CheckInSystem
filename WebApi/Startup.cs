@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business;
+﻿using Business;
 using DataAccess;
 using DataAccess.Impl;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Models;
 
 namespace WebApi
 {
@@ -39,7 +36,8 @@ namespace WebApi
             services.AddMvc();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IRepository<Person>, PersonRepository>();
+            services.AddScoped<IRepository<CheckIn>, CheckInRepository>();
             services.AddScoped<ICheckInService, CheckInService>();
         }
 
