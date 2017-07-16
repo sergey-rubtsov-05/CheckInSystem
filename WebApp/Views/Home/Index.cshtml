@@ -22,8 +22,10 @@
             url: "http://localhost:14183/api/checkIns",
             type: "POST",
             data: {
-                Visitor: $("#visitorFullName").val(),
-                Sex: $("input:radio[name='visitorSex']:checked").val()
+                PersonFirstName: $("#personFirstName").val(),
+                PersonLastName: $("#personLastName").val(),
+                PersonBirthDate: $("#personBirthDate").val(),
+                PersonSex: $("input:radio[name='visitorSex']:checked").val()
             },
             success: function() {
                 updateTable();
@@ -37,8 +39,16 @@
         <div>
             <p>Данные посетителя</p>
             <div class="form-group">
-                <label>ФИО</label>
-                <input type="text" id="visitorFullName" class="form-control"/>
+                <label>Имя</label>
+                <input type="text" id="personFirstName" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Фамилия</label>
+                <input type="text" id="personLastName" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Дата рождения</label>
+                <input type="date" id="personBirthDate" class="form-control"/>
             </div>
             <div class="form-group">
                 <label>Пол</label>
