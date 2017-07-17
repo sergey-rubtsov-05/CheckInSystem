@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Models;
+using WebApi.Filters;
 
 namespace WebApi
 {
@@ -33,7 +34,7 @@ namespace WebApi
                 options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddCors();
-            services.AddMvc();
+            services.AddMvc(options => options.Filters.Add(new ApiExceptionFilter()));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRepository<Person>, PersonRepository>();
@@ -42,7 +43,7 @@ namespace WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CheckInContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CheckInContext dbContext)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -59,7 +60,7 @@ namespace WebApi
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseMvc();
 
-            DbInitializer.Initialize(context);
+            DbInitializer.Initialize(dbContext);
         }
     }
 }
