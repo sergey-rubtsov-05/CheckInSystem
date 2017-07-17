@@ -33,6 +33,12 @@ namespace Business
                 });
         }
 
+        public void Delete(int id)
+        {
+            var checkIn = _uow.Query<CheckIn>().FirstOrDefault(o => o.Id == id);
+            _uow.Remove(checkIn);
+        }
+
         public void Add(CheckInDto checkInDto)
         {
             using (var transaction = _uow.BeginTransaction())
@@ -64,5 +70,6 @@ namespace Business
     {
         void Add(CheckInDto checkInDto);
         IEnumerable<CheckInDto> Get();
+        void Delete(int id);
     }
 }

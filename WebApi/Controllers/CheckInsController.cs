@@ -27,5 +27,11 @@ namespace WebApi.Controllers
         {
             _checkInService.Add(checkIn);
         }
+
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            _checkInService.Delete(id);
+        }
     }
 }

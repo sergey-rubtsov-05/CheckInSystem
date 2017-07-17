@@ -30,5 +30,11 @@ namespace DataAccess.Impl
             _context.Add(entity);
             _context.SaveChanges();
         }
+
+        public void Remove<T>(T entity) where T : Entity
+        {
+            _context.Set<T>().Remove(entity);
+            _context.SaveChanges();
+        }
     }
 }

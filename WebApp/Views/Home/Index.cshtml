@@ -3,15 +3,23 @@
 }
 
 <script>
+    var Url = "http://localhost:14183/api/checkIns";
     var updateTable = function () {
         $.ajax({
             type: 'get',
-            url: 'http://localhost:14183/api/checkIns',
+            url: Url,
             success: function (result) {
                 var tbody = $("#checkInList > tbody");
                 tbody.html(null);
                 result.forEach(function (checkIn) {
-                    tbody.append("<tr><td>" + checkIn.personFullName + "</td><td>" + checkIn.personSex + "</td><td>" + checkIn.personBirthDate + "</td><td>" + checkIn.checkInVisitDateTime + "</td></tr>");
+                    tbody.append(
+                        "<tr>" +
+                        "<td>" + checkIn.personFullName + "</td>" +
+                        "<td>" + checkIn.personSex + "</td>" +
+                        "<td>" + checkIn.personBirthDate + "</td>" +
+                        "<td>" + checkIn.checkInVisitDateTime + "</td>" +
+                        "<td><button class='btn btn-default' onclick='deleteCheckIn(\"" + checkIn.checkInId + "\");'>Удалить</button>" +
+                        "</tr>");
                 });
             }
         });
@@ -19,7 +27,7 @@
 
     var addVisitor = function() {
         $.ajax({
-            url: "http://localhost:14183/api/checkIns",
+            url: Url,
             type: "POST",
             data: {
                 PersonFirstName: $("#personFirstName").val(),
@@ -27,6 +35,16 @@
                 PersonBirthDate: $("#personBirthDate").val(),
                 PersonSex: $("input:radio[name='visitorSex']:checked").val()
             },
+            success: function() {
+                updateTable();
+            }
+        });
+    }
+
+    var deleteCheckIn = function(checkInId) {
+        $.ajax({
+            url: Url + "/" + checkInId,
+            type: "DELETE",
             success: function() {
                 updateTable();
             }
@@ -72,6 +90,7 @@
                 <th>Пол</th>
                 <th>Дата рождения</th>
                 <th>Время прихода</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
