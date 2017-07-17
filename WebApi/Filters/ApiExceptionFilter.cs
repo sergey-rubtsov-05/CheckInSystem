@@ -17,7 +17,7 @@ namespace WebApi.Filters
             {
                 context.HttpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
             }
-            context.Result = new JsonResult(context.Exception.Message);
+            context.Result = new JsonResult(new { message = context.Exception.Message });
 
             base.OnException(context);
         }
