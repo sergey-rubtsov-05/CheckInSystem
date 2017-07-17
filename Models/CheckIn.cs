@@ -8,5 +8,6 @@ namespace Models
         public int PersonId { get; set; }
 
         public DateTime VisitDateTime { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

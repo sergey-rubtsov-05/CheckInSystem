@@ -9,5 +9,6 @@ namespace DataAccess
         ITransaction BeginTransaction();
         void Add<T>(T entity) where T : Entity;
         void Remove<T>(T entity) where T : Entity;
+        void SaveChanges();
     }
 }

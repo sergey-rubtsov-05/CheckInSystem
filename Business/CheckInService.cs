@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Business.Exceptions;
 using DataAccess;
 using Models;
 using Models.DTO;
@@ -18,25 +19,25 @@ namespace Business
             _uow = uow;
         }
 
-        public IEnumerable<CheckInDto> Get()
+        public IQueryable<CheckIn> Get()
         {
             return _uow.Query<CheckIn>()
-                .OrderByDescending(o => o.VisitDateTime)
-                .Select(o => new CheckInDto
-                {
-                    CheckInId = o.Id,
-                    CheckInVisitDateTime = o.VisitDateTime,
-                    PersonBirthDate = o.Person.BirthDate,
-                    PersonFirstName = o.Person.FirstName,
-                    PersonLastName = o.Person.LastName,
-                    PersonSex = o.Person.Sex
-                });
+                .Where(o => o.IsDeleted == false)
+                .OrderByDescending(o => o.VisitDateTime);
         }
 
         public void Delete(int id)
         {
             var checkIn = _uow.Query<CheckIn>().FirstOrDefault(o => o.Id == id);
-            _uow.Remove(checkIn);
+
+            if (checkIn == null)
+                throw new NotFoundExpection("Удаляемое посещение не найдено");
+
+            if (checkIn.IsDeleted)
+                return;
+
+            checkIn.IsDeleted = true;
+            _uow.SaveChanges();
         }
 
         public void Add(CheckInDto checkInDto)
@@ -69,7 +70,7 @@ namespace Business
     public interface ICheckInService
     {
         void Add(CheckInDto checkInDto);
-        IEnumerable<CheckInDto> Get();
+        IQueryable<CheckIn> Get();
         void Delete(int id);
     }
 }

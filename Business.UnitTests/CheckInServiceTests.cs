@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Business.Exceptions;
 using DataAccess;
 using Models;
-using Models.DTO;
 using NSubstitute;
 using Xunit;
 
@@ -11,23 +11,71 @@ namespace Business.UnitTests
 {
     public class CheckInServiceTests
     {
-        [Fact]
-        public void GetReturnOrderedByVisitDateTime()
+        private readonly List<CheckIn> _checkIns;
+        private readonly CheckInService _checkInService;
+        private readonly IUnitOfWork _stubUow;
+
+        public CheckInServiceTests()
         {
             var earlierDate = new DateTime(2017, 07, 16, 17, 00, 00);
             var laterDate = new DateTime(2017, 07, 16, 18, 00, 00);
-            var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.Query<CheckIn>().Returns(info => new List<CheckIn>
+            _checkIns = new List<CheckIn>
             {
                 new CheckIn { Person = new Person(), VisitDateTime = earlierDate },
                 new CheckIn { Person = new Person(), VisitDateTime = laterDate }
-            }.AsQueryable());
-            var checkInService = new CheckInService(Substitute.For<IRepository<CheckIn>>(), unitOfWork);
+            };
 
-            var checkIns = checkInService.Get().ToList();
+            _stubUow = Substitute.For<IUnitOfWork>();
+            _stubUow.Query<CheckIn>().Returns(info => _checkIns.AsQueryable());
+            _checkInService = new CheckInService(Substitute.For<IRepository<CheckIn>>(), _stubUow);
+        }
 
-            Assert.Equal(laterDate, checkIns.First().CheckInVisitDateTime);
-            Assert.Equal(earlierDate, checkIns.Last().CheckInVisitDateTime);
+        [Fact]
+        public void GetReturnOrderedByVisitDateTime()
+        {
+            var checkIns = _checkInService.Get().ToList();
+
+            Assert.True(checkIns.First().VisitDateTime > checkIns.Last().VisitDateTime);
+        }
+
+        [Fact]
+        public void GetReturnWithoutDeleted()
+        {
+            _checkIns.Add(new CheckIn { Person = new Person(), IsDeleted = true });
+
+            var checkIns = _checkInService.Get();
+
+            Assert.False(checkIns.Any(o => o.IsDeleted));
+        }
+
+        [Fact]
+        public void DeleteExistingNotDeletedCheckIn()
+        {
+            var checkIn = new CheckIn { Id = 1, Person = new Person(), IsDeleted = false };
+            _checkIns.Add(checkIn);
+
+            _checkInService.Delete(1);
+
+            Assert.True(checkIn.IsDeleted);
+            _stubUow.Received().SaveChanges();
+        }
+
+        [Fact]
+        public void DeleteExistingDeletedCheckIn()
+        {
+            var checkIn = new CheckIn { Id = 2, Person = new Person(), IsDeleted = true };
+            _checkIns.Add(checkIn);
+
+            _checkInService.Delete(2);
+
+            Assert.True(checkIn.IsDeleted);
+            _stubUow.DidNotReceive().SaveChanges();
+        }
+
+        [Fact]
+        public void DeleteNotExistingThrowNotFoundException()
+        {
+            Assert.Throws<NotFoundExpection>(() => _checkInService.Delete(3));
         }
         //[Fact]
         //public void AddCheckIn()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO;
@@ -19,7 +20,16 @@ namespace WebApi.Controllers
         public IEnumerable<CheckInDto> Get()
         {
             var checkIns = _checkInService.Get();
-            return checkIns;
+            return checkIns
+                .Select(o => new CheckInDto
+                {
+                    CheckInId = o.Id,
+                    CheckInVisitDateTime = o.VisitDateTime,
+                    PersonBirthDate = o.Person.BirthDate,
+                    PersonFirstName = o.Person.FirstName,
+                    PersonLastName = o.Person.LastName,
+                    PersonSex = o.Person.Sex
+                });
         }
 
         [HttpPost]
