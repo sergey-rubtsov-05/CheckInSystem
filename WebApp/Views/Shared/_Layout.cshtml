@@ -16,11 +16,14 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    <link rel="stylesheet" href="~/lib/kendo-ui/styles/kendo.common-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/kendo-ui/styles/kendo.bootstrap.min.css" />
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
+    <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
     <script>
         $(document).ready(function() {
             var errorModal = $("#errorModal");

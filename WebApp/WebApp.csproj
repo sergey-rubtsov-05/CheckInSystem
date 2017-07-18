@@ -7,6 +7,38 @@
   <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\lib\kendo-ui\js\kendo.all.min.js" />
+    <Content Include="wwwroot\lib\kendo-ui\js\kendo.all.min.js.map" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Bootstrap\loading-image.gif" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-Bold.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-BoldOblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-ExtraLight.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-Oblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono-Bold.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono-BoldOblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono-Oblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif-Bold.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif-BoldItalic.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif-Italic.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\LICENSE.txt" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.eot" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.svg" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.woff" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.eot" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.svg" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.woff" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\kendo.bootstrap.min.css" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\kendo.bootstrap.min.css.map" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\kendo.common-bootstrap.min.css" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\kendo.common-bootstrap.min.css.map" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />

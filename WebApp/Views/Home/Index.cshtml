@@ -4,26 +4,6 @@
 
 <script>
     var Url = "http://localhost:14183/api/checkIns";
-    var updateTable = function () {
-        $.ajax({
-            type: 'get',
-            url: Url,
-            success: function (result) {
-                var tbody = $("#checkInList > tbody");
-                tbody.html(null);
-                result.forEach(function (checkIn) {
-                    tbody.append(
-                        "<tr>" +
-                        "<td>" + checkIn.personFullName + "</td>" +
-                        "<td>" + checkIn.personSex + "</td>" +
-                        "<td>" + checkIn.personBirthDate + "</td>" +
-                        "<td>" + checkIn.checkInVisitDateTime + "</td>" +
-                        "<td><button class='btn btn-default' onclick='deleteCheckIn(\"" + checkIn.checkInId + "\");'>Удалить</button>" +
-                        "</tr>");
-                });
-            }
-        });
-    }
 
     var addVisitor = function() {
         $.ajax({
@@ -36,71 +16,98 @@
                 PersonSex: $("input:radio[name='visitorSex']:checked").val()
             },
             success: function() {
-                updateTable();
+                $('#listView').data('kendoGrid').dataSource.read();
+                $('#addWindow').data('kendoWindow').close();
             }
         });
     }
 
-    var deleteCheckIn = function(checkInId) {
-        $.ajax({
-            url: Url + "/" + checkInId,
-            type: "DELETE",
-            success: function() {
-                updateTable();
-            }
-        });
+    var addCheckIn = function() {
+        $('#addWindow').data('kendoWindow').center().open();
     }
 </script>
 
-<div class="row">
-    <div class="col-md-12">
-        <div>
-            <p>Данные посетителя</p>
-            <div class="form-group">
-                <label>Имя</label>
-                <input type="text" id="personFirstName" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label>Фамилия</label>
-                <input type="text" id="personLastName" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label>Дата рождения</label>
-                <input type="date" id="personBirthDate" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label>Пол</label>
-                <label class="radio-inline">
-                    <input type="radio" name="visitorSex" value="1" /> Мужской
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="visitorSex" value="2" /> Женский
-                </label>
-            </div>
-            <button type="button" class="btn btn-default" onclick="addVisitor();">Добавить</button>
+<div id="addWindow">
+    <div>
+        <div class="form-group">
+            <label>Имя</label>
+            <input type="text" id="personFirstName" class="form-control"/>
         </div>
+        <div class="form-group">
+            <label>Фамилия</label>
+            <input type="text" id="personLastName" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>Дата рождения</label>
+            <input type="date" id="personBirthDate" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>Пол</label>
+            <label class="radio-inline">
+                <input type="radio" name="visitorSex" value="1" /> Мужской
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="visitorSex" value="2" /> Женский
+            </label>
+        </div>
+        <button type="button" class="btn btn-default" onclick="addVisitor();">Добавить</button>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <table id="checkInList" class="table table-bordered">
-            <thead>
-            <tr>
-                <th>ФИО</th>
-                <th>Пол</th>
-                <th>Дата рождения</th>
-                <th>Время прихода</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div id="listView"></div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
-        updateTable();
+
+        $('#listView').kendoGrid({
+            toolbar: '<button class="k-button k-button-icontext" onClick="addCheckIn();">Добавить посещение</button>',
+            columns: [
+                { field: 'personFullName', title: 'Полное имя' },
+                { field: 'personSex', title: 'Пол' },
+                { field: 'personBirthDate', title: 'Дата рождения', format: '{0: dd.MM.yyyy}' },
+                { field: 'checkInVisitDateTime', title: 'Время посещения', format: '{0: dd.MM.yyyy HH:mm:ss}' },
+                { command: 'destroy' }
+            ],
+            editable: 'inline',
+            dataSource: new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: Url,
+                        type: 'GET'
+                    },
+                    destroy: {
+                        url: function(data) {
+                            return Url + '/' + data.checkInId;
+                        },
+                        type: 'DELETE'
+                    }
+                },
+                schema: {
+                    model: {
+                        id: 'checkInId',
+                        fields: {
+                            checkInId: {editable: false},
+                            personFullName: 'personFullName',
+                            personSex: 'personSex',
+                            personBirthDate: {type: 'date'},
+                            checkInVisitDateTime: {type: 'date'}
+                        }
+                    }
+                }
+            })
+        });
+
+        $('#addWindow').kendoWindow({
+            width: '400px',
+            title: 'Добавить посещение',
+            resizable: false,
+            draggable: false,
+            visible: false,
+            modal: true,
+            actions: ['close']
+        });
     });
 </script>
