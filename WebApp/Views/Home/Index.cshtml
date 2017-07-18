@@ -13,11 +13,16 @@
                 PersonFirstName: $("#personFirstName").val(),
                 PersonLastName: $("#personLastName").val(),
                 PersonBirthDate: $("#personBirthDate").val(),
-                PersonSex: $("input:radio[name='visitorSex']:checked").val()
+                PersonSex: $("#personSex").val()
             },
             success: function() {
                 $('#listView').data('kendoGrid').dataSource.read();
                 $('#addWindow').data('kendoWindow').close();
+            },
+            error: function(jqXhr) {
+                var alertContainer = $('#addWindowAlertContainer');
+                alertContainer.html(jqXhr.responseJSON.message);
+                alertContainer.removeClass('hidden');
             }
         });
     }
@@ -43,13 +48,12 @@
         </div>
         <div class="form-group">
             <label>Пол</label>
-            <label class="radio-inline">
-                <input type="radio" name="visitorSex" value="1" /> Мужской
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="visitorSex" value="2" /> Женский
-            </label>
+            <select id="personSex" class="form-control">
+                <option value="1">Мужской</option>
+                <option value="2">Женский</option>
+            </select>
         </div>
+        <div id="addWindowAlertContainer" class="alert alert-danger hidden" role="alert"></div>
         <button type="button" class="btn btn-default" onclick="addVisitor();">Добавить</button>
     </div>
 </div>
@@ -65,11 +69,39 @@
         $('#listView').kendoGrid({
             toolbar: '<button class="k-button k-button-icontext" onClick="addCheckIn();">Добавить посещение</button>',
             columns: [
-                { field: 'personFullName', title: 'Полное имя' },
-                { field: 'personSex', title: 'Пол' },
+                {
+                    field: 'personFullName',
+                    title: 'Полное имя',
+                    editor: function(container, options) {
+                        var firstNameInput = $('<input name="personFirstName" class="k-textbox" />');
+                        firstNameInput.appendTo(container);
+
+                        var lastNameInput = $('<input name="personLastName" class="k-textbox" />');
+                        lastNameInput.appendTo(container);
+                    }
+                },
+                {
+                    field: 'personSex',
+                    title: 'Пол',
+                    editor: function(container, options) {
+                        $('<select name="' + options.field + '">' +
+                            '<option value="1">Мужской</option>' +
+                            '<option value="2">Женский</option>' +
+                          '</select>').appendTo(container).kendoComboBox();
+                    },
+                    template: function(dataItem) {
+                        if (dataItem.personSex === 1) {
+                            return 'Мужской';
+                        } else if (dataItem.personSex === 2) {
+                            return 'Женский';
+                        } else {
+                            return 'Не определен';
+                        }
+                    }
+                },
                 { field: 'personBirthDate', title: 'Дата рождения', format: '{0: dd.MM.yyyy}' },
                 { field: 'checkInVisitDateTime', title: 'Время посещения', format: '{0: dd.MM.yyyy HH:mm:ss}' },
-                { command: 'destroy' }
+                { command: ['edit', 'destroy'], width: '250px' }
             ],
             editable: 'inline',
             dataSource: new kendo.data.DataSource({
@@ -83,6 +115,12 @@
                             return Url + '/' + data.checkInId;
                         },
                         type: 'DELETE'
+                    },
+                    update: {
+                        url: function(data) {
+                            return Url + '/' + data.checkInId;
+                        },
+                        type: 'PUT'
                     }
                 },
                 schema: {
@@ -93,7 +131,7 @@
                             personFullName: 'personFullName',
                             personSex: 'personSex',
                             personBirthDate: {type: 'date'},
-                            checkInVisitDateTime: {type: 'date'}
+                            checkInVisitDateTime: {type: 'date', editable: false}
                         }
                     }
                 }
@@ -107,7 +145,12 @@
             draggable: false,
             visible: false,
             modal: true,
-            actions: ['close']
+            actions: ['close'],
+            open: function () {
+                var alertContainer = $('#addWindowAlertContainer');
+                alertContainer.html(null);
+                alertContainer.addClass('hidden');
+            }
         });
     });
 </script>

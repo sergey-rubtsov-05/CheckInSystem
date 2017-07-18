@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Business;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,13 @@ namespace WebApi.Controllers
         [HttpPost]
         public void Post(CheckInDto checkIn)
         {
+            throw new Exception("aaa");
             _checkInService.Add(checkIn);
+        }
+
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] CheckInDto checkIn)
+        {
         }
 
         [HttpDelete("{id}")]
