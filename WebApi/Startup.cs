@@ -1,4 +1,5 @@
-﻿using Business;
+﻿using AutoMapper;
+using Business;
 using DataAccess;
 using DataAccess.Impl;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Maps;
 using WebApi.Filters;
 
 namespace WebApi
@@ -36,8 +37,20 @@ namespace WebApi
             services.AddCors();
             services.AddMvc(options => options.Filters.Add(new ApiExceptionFilter()));
 
+            ConfigureAutoMapper(services);
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICheckInService, CheckInService>();
+        }
+
+        private void ConfigureAutoMapper(IServiceCollection services)
+        {
+            var mapperConfiguration = new MapperConfiguration(configurationExpression =>
+            {
+                new CheckInMapConfigurator().Configure(configurationExpression);
+            });
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(provider => mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

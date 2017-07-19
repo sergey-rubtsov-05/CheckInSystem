@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Business;
 using Microsoft.AspNetCore.Mvc;
-using Models;
 using Models.DTO;
 
 namespace WebApi.Controllers
@@ -11,31 +11,19 @@ namespace WebApi.Controllers
     public class CheckInsController : Controller
     {
         private readonly ICheckInService _checkInService;
+        private readonly IMapper _mapper;
 
-        public CheckInsController(ICheckInService checkInService)
+        public CheckInsController(ICheckInService checkInService, IMapper mapper)
         {
             _checkInService = checkInService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IEnumerable<CheckInDto> Get()
         {
             var checkIns = _checkInService.Get();
-            return checkIns
-                .Select(o => MapCheckInToDto(o));
-        }
-
-        private CheckInDto MapCheckInToDto(CheckIn checkIn)
-        {
-            return new CheckInDto
-            {
-                CheckInId = checkIn.Id,
-                CheckInVisitDateTime = checkIn.VisitDateTime,
-                PersonBirthDate = checkIn.Person.BirthDate,
-                PersonFirstName = checkIn.Person.FirstName,
-                PersonLastName = checkIn.Person.LastName,
-                PersonSex = checkIn.Person.Sex
-            };
+            return checkIns.Select(_mapper.Map<CheckInDto>);
         }
 
         [HttpPost]
@@ -45,10 +33,10 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public CheckInDto Put(int id, [FromBody] CheckInDto checkIn)
+        public CheckInDto Put(int id, [FromBody] CheckInDto checkInDto)
         {
-            var updatedCheckIn = _checkInService.Update(id, checkIn);
-            return MapCheckInToDto(updatedCheckIn);
+            var updatedCheckIn = _checkInService.Update(id, checkInDto);
+            return _mapper.Map<CheckInDto>(updatedCheckIn);
         }
 
         [HttpDelete("{id}")]
