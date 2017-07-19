@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Business;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.DTO;
 
 namespace WebApi.Controllers
@@ -22,27 +22,33 @@ namespace WebApi.Controllers
         {
             var checkIns = _checkInService.Get();
             return checkIns
-                .Select(o => new CheckInDto
-                {
-                    CheckInId = o.Id,
-                    CheckInVisitDateTime = o.VisitDateTime,
-                    PersonBirthDate = o.Person.BirthDate,
-                    PersonFirstName = o.Person.FirstName,
-                    PersonLastName = o.Person.LastName,
-                    PersonSex = o.Person.Sex
-                });
+                .Select(o => MapCheckInToDto(o));
+        }
+
+        private CheckInDto MapCheckInToDto(CheckIn checkIn)
+        {
+            return new CheckInDto
+            {
+                CheckInId = checkIn.Id,
+                CheckInVisitDateTime = checkIn.VisitDateTime,
+                PersonBirthDate = checkIn.Person.BirthDate,
+                PersonFirstName = checkIn.Person.FirstName,
+                PersonLastName = checkIn.Person.LastName,
+                PersonSex = checkIn.Person.Sex
+            };
         }
 
         [HttpPost]
         public void Post(CheckInDto checkIn)
         {
-            throw new Exception("aaa");
             _checkInService.Add(checkIn);
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] CheckInDto checkIn)
+        public CheckInDto Put(int id, [FromBody] CheckInDto checkIn)
         {
+            var updatedCheckIn = _checkInService.Update(id, checkIn);
+            return MapCheckInToDto(updatedCheckIn);
         }
 
         [HttpDelete("{id}")]

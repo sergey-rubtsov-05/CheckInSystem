@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Business.Exceptions;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.DTO;
 
@@ -21,9 +22,15 @@ namespace Business
 
         public IQueryable<CheckIn> Get()
         {
-            return _uow.Query<CheckIn>()
-                .Where(o => o.IsDeleted == false)
+            return GetQuery()
                 .OrderByDescending(o => o.VisitDateTime);
+        }
+
+        private IQueryable<CheckIn> GetQuery()
+        {
+            return _uow.Query<CheckIn>()
+                .Include(o => o.Person)
+                .Where(o => o.IsDeleted == false);
         }
 
         public void Delete(int id)
@@ -38,6 +45,23 @@ namespace Business
 
             checkIn.IsDeleted = true;
             _uow.SaveChanges();
+        }
+
+        public CheckIn Update(int id, CheckInDto checkInDto)
+        {
+            var checkIn = GetQuery().FirstOrDefault(o => o.Id == id);
+
+            if (checkIn == null)
+                throw new NotFoundExpection("Изменяемое посещение не найдено");
+
+            checkIn.Person.FirstName = checkInDto.PersonFirstName;
+            checkIn.Person.LastName = checkInDto.PersonLastName;
+            checkIn.Person.BirthDate = checkInDto.PersonBirthDate.Date;
+            checkIn.Person.Sex = checkInDto.PersonSex;
+
+            _uow.SaveChanges();
+
+            return checkIn;
         }
 
         public void Add(CheckInDto checkInDto)
@@ -72,5 +96,6 @@ namespace Business
         void Add(CheckInDto checkInDto);
         IQueryable<CheckIn> Get();
         void Delete(int id);
+        CheckIn Update(int id, CheckInDto checkInDto);
     }
 }

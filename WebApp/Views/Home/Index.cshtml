@@ -16,7 +16,6 @@
                 PersonSex: $("#personSex").val()
             },
             success: function() {
-                $('#listView').data('kendoGrid').dataSource.read();
                 $('#addWindow').data('kendoWindow').close();
             },
             error: function(jqXhr) {
@@ -72,7 +71,7 @@
                 {
                     field: 'personFullName',
                     title: 'Полное имя',
-                    editor: function(container, options) {
+                    editor: function(container) {
                         var firstNameInput = $('<input name="personFirstName" class="k-textbox" />');
                         firstNameInput.appendTo(container);
 
@@ -87,7 +86,7 @@
                         $('<select name="' + options.field + '">' +
                             '<option value="1">Мужской</option>' +
                             '<option value="2">Женский</option>' +
-                          '</select>').appendTo(container).kendoComboBox();
+                          '</select>').appendTo(container).kendoDropDownList();
                     },
                     template: function(dataItem) {
                         if (dataItem.personSex === 1) {
@@ -120,7 +119,15 @@
                         url: function(data) {
                             return Url + '/' + data.checkInId;
                         },
-                        type: 'PUT'
+                        type: 'PUT',
+                        contentType: 'application/json',
+                        dataType: 'json'
+                    },
+                    parameterMap: function(data, operation) {
+                        if (operation === 'update') {
+                            return JSON.stringify(data);
+                        }
+                        return data;
                     }
                 },
                 schema: {
@@ -134,6 +141,9 @@
                             checkInVisitDateTime: {type: 'date', editable: false}
                         }
                     }
+                },
+                sync: function(e) {
+                    e.sender.read();
                 }
             })
         });
