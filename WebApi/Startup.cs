@@ -37,8 +37,6 @@ namespace WebApi
             services.AddMvc(options => options.Filters.Add(new ApiExceptionFilter()));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IRepository<Person>, PersonRepository>();
-            services.AddScoped<IRepository<CheckIn>, CheckInRepository>();
             services.AddScoped<ICheckInService, CheckInService>();
         }
 

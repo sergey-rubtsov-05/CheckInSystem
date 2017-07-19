@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Business.Exceptions;
 using DataAccess;
@@ -11,12 +10,10 @@ namespace Business
 {
     public class CheckInService : ICheckInService
     {
-        private readonly IRepository<CheckIn> _checkInRepository;
         private readonly IUnitOfWork _uow;
 
-        public CheckInService(IRepository<CheckIn> checkInRepository, IUnitOfWork uow)
+        public CheckInService(IUnitOfWork uow)
         {
-            _checkInRepository = checkInRepository;
             _uow = uow;
         }
 

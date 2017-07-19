@@ -27,7 +27,7 @@ namespace Business.UnitTests
 
             _stubUow = Substitute.For<IUnitOfWork>();
             _stubUow.Query<CheckIn>().Returns(info => _checkIns.AsQueryable());
-            _checkInService = new CheckInService(Substitute.For<IRepository<CheckIn>>(), _stubUow);
+            _checkInService = new CheckInService(_stubUow);
         }
 
         [Fact]
