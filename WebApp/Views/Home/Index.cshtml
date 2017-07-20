@@ -38,6 +38,13 @@
     var addCheckIn = function() {
         $('#addWindow').data('kendoWindow').center().open();
     }
+
+    var resetAddingWindowControls = function() {
+        $("#personFirstName").val(null);
+        $("#personLastName").val(null);
+        $("#personBirthDate").val(null);
+        $("#personSex").val(null);
+    }
 </script>
 
 <div id="addWindow">
@@ -172,6 +179,7 @@
             },
             close: function() {
                 $('#checkInsGrid').data('kendoGrid').dataSource.read();
+                resetAddingWindowControls();
             }
         });
     });
