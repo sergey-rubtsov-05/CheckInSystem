@@ -4,6 +4,7 @@ using System.Linq;
 using Business.Exceptions;
 using DataAccess;
 using Models;
+using Models.DTO;
 using NSubstitute;
 using Xunit;
 
@@ -77,17 +78,88 @@ namespace Business.UnitTests
         {
             Assert.Throws<NotFoundExpection>(() => _checkInService.Delete(3));
         }
-        //[Fact]
-        //public void AddCheckIn()
-        //{
-        //    var substituteRepo = Substitute.For<IRepository<CheckIn>>();
-        //    var checkInService = new CheckInService(substituteRepo, Substitute.For<IUnitOfWork>());
-        //    var checkIn = new CheckInDto();
 
-        //    checkInService.Add(checkIn);
+        [Fact]
+        public void AddCheckInWithExistingPerson()
+        {
+            _stubUow.Query<Person>().Returns(info => new List<Person>
+            {
+                new Person
+                {
+                    FirstName = "firstName",
+                    LastName = "lastName",
+                    BirthDate = new DateTime(2017, 7, 19),
+                    Sex = Sex.Female
+                }
+            }.AsQueryable());
+            var checkInDto = new CheckInDto
+            {
+                PersonFirstName = "firstName",
+                PersonLastName = "lastName",
+                PersonBirthDate = new DateTime(2017, 7, 19),
+                PersonSex = Sex.Female
+            };
 
-        //    Assert.NotEqual(DateTime.MinValue, checkIn.VisitDateTime);
-        //    substituteRepo.Received().Add(checkIn);
-        //}
+            var checkIn = _checkInService.Add(checkInDto);
+
+            Assert.NotEqual(DateTime.MinValue, checkIn.VisitDateTime);
+            _stubUow.Received().Add(checkIn);
+        }
+
+        [Fact]
+        public void AddCheckInWithNewPerson()
+        {
+            var checkInDto = new CheckInDto();
+
+            var checkIn = _checkInService.Add(checkInDto);
+
+            Assert.NotEqual(DateTime.MinValue, checkIn.VisitDateTime);
+            _stubUow.Received().Add(checkIn);
+        }
+
+        [Fact]
+        public void AddCheckInWithTransaction()
+        {
+            var checkInDto = new CheckInDto();
+            var stubTransaction = Substitute.For<ITransaction>();
+            _stubUow.BeginTransaction().Returns(info => stubTransaction);
+
+            _checkInService.Add(checkInDto);
+
+            _stubUow.Received().BeginTransaction();
+            stubTransaction.Received().Commit();
+        }
+
+        [Fact]
+        public void UpdateNotExistingCheckInThrowsNotFoundException()
+        {
+            Assert.Throws<NotFoundExpection>(() => _checkInService.Update(10, null));
+        }
+
+        [Fact]
+        public void UpdateCheckIn()
+        {
+            _checkIns.Add(new CheckIn
+            {
+                Id = 10,
+                Person = new Person()
+            });
+            var checkInDto = new CheckInDto
+            {
+                PersonFirstName = "newFirstName",
+                PersonLastName = "newLastName",
+                PersonSex = Sex.Female,
+                PersonBirthDate = new DateTime(2000, 1, 1)
+            };
+
+            var checkIn = _checkInService.Update(10, checkInDto);
+
+            Assert.Equal("newFirstName", checkIn.Person.FirstName);
+            Assert.Equal("newLastName", checkIn.Person.LastName);
+            Assert.Equal(Sex.Female, checkIn.Person.Sex);
+            Assert.Equal(new DateTime(2000, 1, 1), checkIn.Person.BirthDate);
+
+            _stubUow.Received().SaveChanges();
+        }
     }
 }

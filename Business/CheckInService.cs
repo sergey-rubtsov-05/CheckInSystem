@@ -61,7 +61,7 @@ namespace Business
             return checkIn;
         }
 
-        public void Add(CheckInDto checkInDto)
+        public CheckIn Add(CheckInDto checkInDto)
         {
             using (var transaction = _uow.BeginTransaction())
             {
@@ -84,15 +84,9 @@ namespace Business
                 _uow.Add(checkIn);
 
                 transaction.Commit();
+
+                return checkIn;
             }
         }
-    }
-
-    public interface ICheckInService
-    {
-        void Add(CheckInDto checkInDto);
-        IQueryable<CheckIn> Get();
-        void Delete(int id);
-        CheckIn Update(int id, CheckInDto checkInDto);
     }
 }

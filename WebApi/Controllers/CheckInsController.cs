@@ -29,9 +29,10 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [ValidationFilter]
-        public void Post(CheckInDto checkIn)
+        public CheckInDto Post(CheckInDto checkIn)
         {
-            _checkInService.Add(checkIn);
+            var addedCheckIn = _checkInService.Add(checkIn);
+            return _mapper.Map<CheckInDto>(addedCheckIn);
         }
 
         [HttpPut("{id}")]

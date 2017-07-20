@@ -67,14 +67,14 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <div id="listView"></div>
+        <div id="checkInsGrid"></div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
 
-        $('#listView').kendoGrid({
+        $('#checkInsGrid').kendoGrid({
             toolbar: '<button class="k-button k-button-icontext" onClick="addCheckIn();">Добавить посещение</button>',
             columns: [
                 {
@@ -169,6 +169,9 @@
                 var alertContainer = $('#addWindowAlertContainer');
                 alertContainer.html(null);
                 alertContainer.addClass('hidden');
+            },
+            close: function() {
+                $('#checkInsGrid').data('kendoGrid').dataSource.read();
             }
         });
     });
