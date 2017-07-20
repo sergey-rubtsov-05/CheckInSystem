@@ -4,6 +4,7 @@ using AutoMapper;
 using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO;
+using WebApi.Filters;
 
 namespace WebApi.Controllers
 {
@@ -27,12 +28,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [ValidationFilter]
         public void Post(CheckInDto checkIn)
         {
             _checkInService.Add(checkIn);
         }
 
         [HttpPut("{id}")]
+        [ValidationFilter]
         public CheckInDto Put(int id, [FromBody] CheckInDto checkInDto)
         {
             var updatedCheckIn = _checkInService.Update(id, checkInDto);

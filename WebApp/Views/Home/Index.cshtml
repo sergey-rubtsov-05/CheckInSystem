@@ -3,11 +3,11 @@
 }
 
 <script>
-    var Url = "http://localhost:14183/api/checkIns";
+    var UrlCheckInController = "http://localhost:14183/api/checkIns";
 
     var addVisitor = function() {
         $.ajax({
-            url: Url,
+            url: UrlCheckInController,
             type: "POST",
             data: {
                 PersonFirstName: $("#personFirstName").val(),
@@ -20,7 +20,16 @@
             },
             error: function(jqXhr) {
                 var alertContainer = $('#addWindowAlertContainer');
-                alertContainer.html(jqXhr.responseJSON.message);
+                if (jqXhr.status === 400) {
+                    alertContainer.html(null);
+                    for (var prop in jqXhr.responseJSON) {
+                        if (jqXhr.responseJSON.hasOwnProperty(prop)) {
+                            alertContainer.append('<p>' + jqXhr.responseJSON[prop][0] + '</p>');
+                        }
+                    }
+                } else {
+                    alertContainer.html(jqXhr.responseJSON.message);
+                }
                 alertContainer.removeClass('hidden');
             }
         });
@@ -106,18 +115,18 @@
             dataSource: new kendo.data.DataSource({
                 transport: {
                     read: {
-                        url: Url,
+                        url: UrlCheckInController,
                         type: 'GET'
                     },
                     destroy: {
                         url: function(data) {
-                            return Url + '/' + data.checkInId;
+                            return UrlCheckInController + '/' + data.checkInId;
                         },
                         type: 'DELETE'
                     },
                     update: {
                         url: function(data) {
-                            return Url + '/' + data.checkInId;
+                            return UrlCheckInController + '/' + data.checkInId;
                         },
                         type: 'PUT',
                         contentType: 'application/json',
